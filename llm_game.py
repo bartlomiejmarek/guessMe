@@ -7,11 +7,9 @@ from langchain_community.llms import Ollama
 
 from agents import HostAgent, Mode, GameAgent
 from utils.categories import CATEGORIES
-from utils.prompts import CREATOR_PROMPT, ANSWERER_PROMPT, QUESTIONER_PROMPT
+from utils.prompts import CREATOR_PROMPT, ANSWERER_PROMPT, QUESTIONER_PROMPT, GUARD_PROMPT
 
 MODE = Mode.HARD
-LLM_ROLE = "Questioner"
-# LLM_ROLE = "Answerer"
 
 if __name__ == '__main__':
 
@@ -29,7 +27,7 @@ if __name__ == '__main__':
         )
     ).conversation.run(length=MODE.value, category=choice(CATEGORIES), level=MODE.name)
 
-    gamer = GameAgent(
+    answerer = GameAgent(
         llm=Ollama(
             model="llama2",
             # callback_manager=CallbackManager([StreamingStdOutCallbackHandler()]),
@@ -44,7 +42,9 @@ if __name__ == '__main__':
             chat_memory=ChatMessageHistory(),
             ai_prefix='Answerer',
             human_prefix="Questioner")
-    ) if LLM_ROLE.lower() == "answerer" else GameAgent(
+    )
+
+    questioner = GameAgent(
         llm=Ollama(
             model="llama2",
             # callback_manager=CallbackManager([StreamingStdOutCallbackHandler()]),
@@ -60,16 +60,23 @@ if __name__ == '__main__':
     )
     counter = 0
     questioner_input = ""
+
+    # guardrails = HostAgent(
+    #     llm=Ollama(
+    #         model="llama2",
+    #         temperature=0.8
+    #     ),
+    #     prompt=PromptTemplate(
+    #         input_variables=["length", "category"],
+    #         template=GUARD_PROMPT
+    #     )
+    # )
+
     while True:
-        ai_response = gamer.play(questioner_input)
-        questioner_input = input('> ')
-        print(f"AI: {ai_response}")
+        answerer_response = answerer.play(questioner_input)
+        print(f"Answerer: {answerer_response}")
+        questioner_response = questioner.play(answerer_response)
+        print(f"Questioner: {questioner_response}")
         counter += 1
-        if "game over" in ai_response.lower() and LLM_ROLE.lower() == "answerer":
-            print(f"Congratulations. The Answerer claims that the game is over.\nYou have achieved it using {counter} prompts.")
-            break
-        elif "game over" in questioner_input.lower() and LLM_ROLE.lower() == "questioner":
-            print(f"The game is over.\nLLM have achieved it using {counter} prompts.")
-            break
 
 

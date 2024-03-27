@@ -29,6 +29,11 @@ Additional Tips:
 - Don't Give Up: Even if you're stuck, a seemingly random question might spark a new idea!
 - Let me know when you're ready to begin!
 - Hypothetical Questions: Try asking "If I were to..., would that be related to the word?"
+__________
+Game history:
+{history}
+----------
+Answerer: {input}
 '''
 
 
@@ -97,7 +102,7 @@ Two-word phrases: "Smoked Cigarette", "Gaming computer", "Machine learning".
 GUARD_PROMPT = '''
 You are the host of a game called "Ask-Guess."
 Your role demands precision, impartiality, and the facilitation of a challenging yet fair gameplay environment. 
-The secret word is {}
+The secret word is {password}
  
 Your responsibilities:  
 - Oversight and Compliance: Monitor responses with vigilance. Should the secret word or its direct synonyms be mentioned, intervene with a coded message such as, "A rephrasing might be in order," to subtly redirect without disrupting gameplay continuity.
