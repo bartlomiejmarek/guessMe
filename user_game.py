@@ -5,13 +5,14 @@ from langchain.prompts import PromptTemplate
 from langchain_community.chat_message_histories.in_memory import ChatMessageHistory
 from langchain_community.llms import Ollama
 
-from agents import HostAgent, Mode, GameAgent
+from agents import HostAgent, Mode, GameAgent, Role
+from game import llm_vs_human_play_game
 from utils.categories import CATEGORIES
 from utils.prompts import CREATOR_PROMPT, ANSWERER_PROMPT, QUESTIONER_PROMPT
 
 MODE = Mode.HARD
-LLM_ROLE = "Questioner"
-# LLM_ROLE = "Answerer"
+LLM_ROLE = Role.QUESTIONER
+# LLM_ROLE = Role.ANSWERER
 
 if __name__ == '__main__':
 
@@ -44,7 +45,7 @@ if __name__ == '__main__':
             chat_memory=ChatMessageHistory(),
             ai_prefix='Answerer',
             human_prefix="Questioner")
-    ) if LLM_ROLE.lower() == "answerer" else GameAgent(
+    ) if LLM_ROLE.name.lower() == "answerer" else GameAgent(
         llm=Ollama(
             model="llama2",
             # callback_manager=CallbackManager([StreamingStdOutCallbackHandler()]),
@@ -58,18 +59,11 @@ if __name__ == '__main__':
             ai_prefix='Questioner',
             human_prefix="Answerer")
     )
-    counter = 0
-    questioner_input = ""
-    while True:
-        ai_response = gamer.play(questioner_input)
-        questioner_input = input('> ')
-        print(f"AI: {ai_response}")
-        counter += 1
-        if "game over" in ai_response.lower() and LLM_ROLE.lower() == "answerer":
-            print(f"Congratulations. The Answerer claims that the game is over.\nYou have achieved it using {counter} prompts.")
-            break
-        elif "game over" in questioner_input.lower() and LLM_ROLE.lower() == "questioner":
-            print(f"The game is over.\nLLM have achieved it using {counter} prompts.")
-            break
+
+    number_of_tries = llm_vs_human_play_game(
+        gamer=gamer,
+        llm_role=LLM_ROLE,
+        output_file='output.csv'
+    )
 
 

@@ -39,7 +39,6 @@ class GameAgent(Agent):
         self.memory = memory
         super().__init__(llm, prompt)
 
-
     def initialize_chain(self):
         return ConversationChain(
             llm=self.llm,
