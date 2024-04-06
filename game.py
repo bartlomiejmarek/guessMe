@@ -69,17 +69,23 @@ def llm_vs_human_play_game(
         output_file: Union[str | Path] = None
 ):
     counter = 0
-    questioner_input = ""
+
     while True:
-        ai_response = gamer.play(questioner_input)
-        questioner_input = input('> ')
+        if llm_role.name.lower() == "questioner" and counter == 0:
+            user_input = "Hello, let's begin the game! Start with your question. "
+        elif counter ==0:
+            user_input = "Hello, let's begin the game! Provide me a simple hint.  "
+        else:
+            user_input = input('> ')
+        ai_response = gamer.play(user_input)
+
         print(f"AI: {ai_response}")
         counter += 1
         if "game over" in ai_response.lower() and llm_role.name.lower() == "answerer":
             print(
                 f"Congratulations. The Answerer claims that the game is over.\nYou have achieved it using {counter} prompts.")
             break
-        elif "game over" in questioner_input.lower() and llm_role.name.lower() == "questioner":
+        elif "game over" in user_input.lower() and llm_role.name.lower() == "questioner":
             print(f"The game is over.\nLLM have achieved it using {counter} prompts.")
             break
     if output_file:

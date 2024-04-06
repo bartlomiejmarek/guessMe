@@ -60,7 +60,7 @@ if __name__ == '__main__':
             human_prefix="Answerer")
     )
     if LLM_ROLE.name.lower() == "questioner":
-        print(f'Remember the secret phrase: "{password}"')
+        print(f'You are a questioner. Please, remember the secret phrase: "{password}"')
 
     number_of_tries = llm_vs_human_play_game(
         gamer=gamer,

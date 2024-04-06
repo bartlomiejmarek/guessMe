@@ -44,7 +44,7 @@ class GameAgent(Agent):
             llm=self.llm,
             prompt=self.prompt_template,
             memory=self.memory,
-            verbose=True
+            verbose=False
         )
 
     def play(self, prompt: str) -> str:
