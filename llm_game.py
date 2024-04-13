@@ -5,18 +5,16 @@ from langchain.prompts import PromptTemplate
 from langchain_community.chat_message_histories.in_memory import ChatMessageHistory
 from langchain_community.llms import Ollama
 
-from agents import HostAgent, Mode, GameAgent
+from agents import HostAgent, Mode, GameAgent, Role
 from game import llm_vs_llm_play_game
 from utils.categories import CATEGORIES
 from utils.prompts import CREATOR_PROMPT, ANSWERER_PROMPT, QUESTIONER_PROMPT, GUARD_PROMPT, ANSWERER_GUARD_PROMPT, \
     QUESTIONER_GUARD_PROMPT
 
-MODE = Mode.HARD
-
-
+MODE = Mode.EASY
+VERBOSE = False
 
 if __name__ == '__main__':
-
     # use llm to create a secret password with fixed length and context (category)
     # TODO: try to improve the prompt or try with other models and model's settings (mostly temperature)
     #  to make more predictable output - sometimes the length and level is inadequate and  the phrase is repeated.
@@ -31,6 +29,8 @@ if __name__ == '__main__':
         )
     ).conversation.run(length=MODE.value, category=choice(CATEGORIES), level=MODE.name)
 
+    print(f"Secret password is {password}. ")
+    input("Click enter to continue.")
     answerer = GameAgent(
         llm=Ollama(
             model="llama2",
@@ -45,7 +45,9 @@ if __name__ == '__main__':
         memory=ConversationBufferMemory(
             chat_memory=ChatMessageHistory(),
             ai_prefix='Answerer',
-            human_prefix="Questioner")
+            human_prefix="Questioner"),
+        role=Role.ANSWERER,
+        verbose=VERBOSE
     )
 
     questioner = GameAgent(
@@ -60,7 +62,9 @@ if __name__ == '__main__':
         memory=ConversationBufferMemory(
             chat_memory=ChatMessageHistory(),
             ai_prefix='Questioner',
-            human_prefix="Answerer")
+            human_prefix="Answerer"),
+        role=Role.QUESTIONER,
+        verbose=VERBOSE
     )
 
     answerer_guardrail = HostAgent(
@@ -90,7 +94,3 @@ if __name__ == '__main__':
         questioner=questioner,
         output_file='output.csv'
     )
-
-
-
-

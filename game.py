@@ -34,15 +34,17 @@ def llm_vs_llm_play_game(
         output_file: Union[str | Path] = None
 ):
     counter = 0
-    questioner_input = ""
+    questioner_response = ""
 
     while True:
-        answerer_response = answerer.play(questioner_input)
+        answerer_response = answerer.play(questioner_response)
         print(f"Answerer: {answerer_response}")
+        input()
         if "game over" in answerer_response.lower():
             break
         questioner_response = questioner.play(answerer_response)
         print(f"Questioner: {questioner_response}")
+        input()
         counter += 1
     if output_file:
         save_dict_to_csv(
