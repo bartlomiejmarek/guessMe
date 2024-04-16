@@ -1,0 +1,1 @@
+"""Codebase for guessme - evalueator of LLMs for the game of guessing a secret password."""

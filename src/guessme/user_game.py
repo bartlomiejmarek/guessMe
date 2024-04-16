@@ -5,10 +5,10 @@ from langchain.prompts import PromptTemplate
 from langchain_community.chat_message_histories.in_memory import ChatMessageHistory
 from langchain_community.llms import Ollama
 
-from agents import HostAgent, Mode, GameAgent, Role
-from game import llm_vs_human_play_game
-from utils.categories import CATEGORIES
-from utils.prompts import CREATOR_PROMPT, ANSWERER_PROMPT, QUESTIONER_PROMPT
+from guessme.agents import HostAgent, Mode, GameAgent, Role
+from guessme.game import llm_vs_human_play_game
+from guessme.utils.categories import CATEGORIES
+from guessme.utils.prompts import CREATOR_PROMPT, ANSWERER_PROMPT, QUESTIONER_PROMPT
 
 MODE = Mode.HARD
 LLM_ROLE = Role.QUESTIONER

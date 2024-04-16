@@ -3,8 +3,7 @@ from typing import Optional, Union
 from csv import DictWriter
 from os.path import isfile
 
-from agents import GameAgent, HostAgent, Role
-
+from guessme.agents import GameAgent, HostAgent, Role
 
 def save_dict_to_csv(file_path, dictionary, headers=None):
     """Saves or appends a dictionary to a CSV file.

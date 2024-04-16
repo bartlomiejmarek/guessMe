@@ -1,0 +1,97 @@
+[build-system]
+requires      = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name        = "guessme"
+version     = "0.1"
+description = "Evaluator of LLM's models"
+license = { text = "Proprietary" }
+authors = [{ name = "Jakub Chojnacki", email = "jacobchojnacki@protonmail.com" },
+]
+readme= "README.md"
+requires-python = ">= 3.8, <3.12"
+
+dependencies = [
+    "numpy~=1.26.0; python_version >= '3.9'",
+    "monai~=1.3.0; python_version >= '3.8'",
+    "fire",
+    "typer",
+    "tqdm",
+    "pytorch-lightning==2.0.6",
+    "lightning[pytorch-extra]",
+    "torch",
+    "torchvision",
+    "scikit-image~=0.21.0",
+    "langchain",
+    "python-dotenv"
+]
+
+
+[project.optional-dependencies]
+jupyter = [
+    "jupyterlab~=3.6",
+    "pandas~=2.1; python_version >= '3.8'",
+    "matplotlib ~= 3.8",
+    "seaborn ~= 0.13",
+]
+
+lint = [
+    "black ~= 23.7",
+    "autoflake ~= 2.2",
+    "flake8 ~= 6.0",
+    "flake8-pyi ~= 23.6",
+    "flake8-docstrings ~= 1.7",
+    "pyproject-flake8 ~= 6.0",
+    "isort ~= 5.10",
+    "mypy ~= 1.4",
+    "pymarkdownlnt ~= 0.9",
+    "pre-commit ~= 3.3",
+]
+train = [
+    "tensorboard"
+]
+
+test = [
+    "pytest ~= 7.1",
+    "pytest-cases ~= 3.6",
+    "pytest-cov ~= 3.0",
+    "pytest-icdiff ~= 0.5",
+    "pytest-mock ~= 3.8",
+    "pytest-sugar ~= 0.9",
+    "pytest-timeout ~= 2.1",
+]
+docs = [
+    "mkdocs ~= 1.3",
+    "mkdocstrings[python] ~= 0.19",
+    "mkdocs-material ~= 8.3",
+    "mkdocs-gen-files ~= 0.3",
+    "mkdocs-literate-nav ~= 0.4",
+    "mkdocs-section-index ~= 0.3",
+]
+
+dev = ["guessme[jupyter, lint, test, docs, train]"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.black]
+line_length = 120
+
+ignore = [
+    # "E501", # line too long, handled by black
+    "B008", # do not perform function calls in argument defaults
+    "C901", # too complex
+    "W191", # indentation contains tabs
+]
+extend-exclude = [".venv/", "build/", "dist/", "docs/"]
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
+
+[tool.ruff.lint.isort]
+order-by-type = true
+lines-between-types = 1
+combine-as-imports = true
+# known_first_party = "common"
