@@ -32,10 +32,14 @@ class Agent(ABC):
 class GameAgent(Agent):
     def __init__(
             self,
+            role: Role,
             llm,
             prompt: Union[PromptTemplate | str],
             memory: BaseChatMemory,
+            verbose: bool = False
     ):
+        self.__role__ = role
+        self.__verbose=verbose
         self.memory = memory
         super().__init__(llm, prompt)
 
@@ -44,7 +48,7 @@ class GameAgent(Agent):
             llm=self.llm,
             prompt=self.prompt_template,
             memory=self.memory,
-            verbose=False
+            verbose=self.__verbose
         )
 
     def play(self, prompt: str) -> str:
