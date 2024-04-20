@@ -5,15 +5,14 @@ from langchain.prompts import PromptTemplate
 from langchain_community.chat_message_histories.in_memory import ChatMessageHistory
 from langchain_community.llms import Ollama
 
-from agents import HostAgent, Mode, GameAgent
-from game import llm_vs_llm_play_game
-from utils.categories import CATEGORIES
-from utils.prompts import CREATOR_PROMPT, ANSWERER_PROMPT, QUESTIONER_PROMPT, GUARD_PROMPT, ANSWERER_GUARD_PROMPT, \
-    QUESTIONER_GUARD_PROMPT
+from guessme.llm.agents import HostAgent, Mode, GameAgent, Role
+from guessme.llm.game import llm_vs_human_play_game
+from guessme.utils.categories import CATEGORIES
+from guessme.utils.prompts import CREATOR_PROMPT, ANSWERER_PROMPT, QUESTIONER_PROMPT
 
 MODE = Mode.HARD
-
-
+LLM_ROLE = Role.QUESTIONER
+# LLM_ROLE = Role.ANSWERER
 
 if __name__ == '__main__':
 
@@ -31,7 +30,7 @@ if __name__ == '__main__':
         )
     ).conversation.run(length=MODE.value, category=choice(CATEGORIES), level=MODE.name)
 
-    answerer = GameAgent(
+    gamer = GameAgent(
         llm=Ollama(
             model="llama2",
             # callback_manager=CallbackManager([StreamingStdOutCallbackHandler()]),
@@ -46,9 +45,7 @@ if __name__ == '__main__':
             chat_memory=ChatMessageHistory(),
             ai_prefix='Answerer',
             human_prefix="Questioner")
-    )
-
-    questioner = GameAgent(
+    ) if LLM_ROLE.name.lower() == "answerer" else GameAgent(
         llm=Ollama(
             model="llama2",
             # callback_manager=CallbackManager([StreamingStdOutCallbackHandler()]),
@@ -62,35 +59,13 @@ if __name__ == '__main__':
             ai_prefix='Questioner',
             human_prefix="Answerer")
     )
+    if LLM_ROLE.name.lower() == "questioner":
+        print(f'You are a questioner. Please, remember the secret phrase: "{password}"')
 
-    answerer_guardrail = HostAgent(
-        llm=Ollama(
-            model="llama2",
-            temperature=0.0
-        ),
-        prompt=PromptTemplate(
-            input_variables=["input"],
-            template=ANSWERER_GUARD_PROMPT
-        )
-    )
-
-    questioner_guardrail = HostAgent(
-        llm=Ollama(
-            model="llama2",
-            temperature=0.0
-        ),
-        prompt=PromptTemplate(
-            input_variables=["input"],
-            template=QUESTIONER_GUARD_PROMPT
-        )
-    )
-
-    number_of_tries = llm_vs_llm_play_game(
-        answerer=answerer,
-        questioner=questioner,
+    number_of_tries = llm_vs_human_play_game(
+        gamer=gamer,
+        llm_role=LLM_ROLE,
         output_file='output.csv'
     )
-
-
 
 

@@ -3,7 +3,7 @@ from typing import Optional, Union
 from csv import DictWriter
 from os.path import isfile
 
-from guessme.agents import GameAgent, HostAgent, Role
+from guessme.llm.agents import GameAgent, HostAgent, Role
 
 def save_dict_to_csv(file_path, dictionary, headers=None):
     """Saves or appends a dictionary to a CSV file.
@@ -74,7 +74,7 @@ def llm_vs_human_play_game(
     while True:
         if llm_role.name.lower() == "questioner" and counter == 0:
             user_input = "Hello, let's begin the game! Start with your question. "
-        elif counter ==0:
+        elif counter == 0 and llm_role.name.lower == "answerer":
             user_input = "Hello, let's begin the game! Provide me a simple hint.  "
         else:
             user_input = input('> ')
