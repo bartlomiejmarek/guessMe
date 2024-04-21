@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import Optional, Union
 from csv import DictWriter
 from os.path import isfile
+import streamlit as st
 
 from guessme.llm.agents import GameAgent, HostAgent, Role
 
@@ -37,12 +38,12 @@ def llm_vs_llm_play_game(
 
     while True:
         answerer_response = answerer.play(questioner_response)
-        print(f"Answerer: {answerer_response}")
+        st.write(f"Answerer: {answerer_response}")
         input()
         if "game over" in answerer_response.lower():
             break
         questioner_response = questioner.play(answerer_response)
-        print(f"Questioner: {questioner_response}")
+        st.write(f"Questioner: {questioner_response}")
         input()
         counter += 1
     if output_file:
@@ -70,31 +71,55 @@ def llm_vs_human_play_game(
         output_file: Union[str | Path] = None
 ):
     counter = 0
-
-    while True:
-        if llm_role.name.lower() == "questioner" and counter == 0:
-            user_input = "Hello, let's begin the game! Start with your question. "
-        elif counter == 0 and llm_role.name.lower == "answerer":
-            user_input = "Hello, let's begin the game! Provide me a simple hint.  "
-        else:
-            user_input = input('> ')
-        ai_response = gamer.play(user_input)
-
-        print(f"AI: {ai_response}")
+    
+    if "message" not in st.session_state:
+        st.session_state.message = []
+    
+      
+    for message in st.session_state.message:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+    
+    
+    if llm_role.lower() == "questioner" and counter == 0:
+        user_input = "Hello, let's begin the game! Start with your question. "
+    elif counter == 0 and llm_role.lower == "answerer":
+        user_input = "Hello, let's begin the game! Provide me a simple hint.  "
+    else:
+        user_input = st.chat_input('> ')
+    
+    if user_input:
+        with st.chat_message("user"):
+            st.markdown(user_input)
+    
+        st.session_state.message.append({"role": "user", "content": user_input})
+    
+        with st.spinner("AI is thinking..."):
+            with st.chat_message("assistant"):
+                message_placeholder = st.empty()
+                full_message = ""
+                for response in gamer.play(user_input):
+                    full_message += response
+                    message_placeholder.markdown(full_message)
+                ai_response = gamer.play(user_input)
+                st.markdown(ai_response)
+                message_placeholder.markdown(full_message + "| ")
+            message_placeholder.markdown(full_message)
+        st.session_state.message.append({"role": "assistant", "content": ai_response})
+        
         counter += 1
-        if "game over" in ai_response.lower() and llm_role.name.lower() == "answerer":
-            print(
+        if "game over" in ai_response.lower() and llm_role.lower() == "answerer":
+            st.write(
                 f"Congratulations. The Answerer claims that the game is over.\nYou have achieved it using {counter} prompts.")
-            break
-        elif "game over" in user_input.lower() and llm_role.name.lower() == "questioner":
-            print(f"The game is over.\nLLM have achieved it using {counter} prompts.")
-            break
+        elif "game over" in user_input.lower() and llm_role.lower() == "questioner":
+            st.write(f"The game is over.\nLLM have achieved it using {counter} prompts.")
+        
     if output_file:
         save_dict_to_csv(
             output_file,
             {
-                "answerer": gamer.llm.__dict__ if llm_role.name.lower() == "answerer" else "Human",
-                "questioner": gamer.llm.__dict__ if llm_role.name.lower() == "questioner" else "Human",
+                "answerer": gamer.llm.__dict__ if llm_role.lower() == "answerer" else "Human",
+                "questioner": gamer.llm.__dict__ if llm_role.lower() == "questioner" else "Human",
                 "guardrail": guardrail.llm.__dict__ if guardrail is not None else None,
                 "questioner guardrails": questioner_guardrails.llm.__dict__ if questioner_guardrails is not None else None,
                 "answerer guardrails": answerer_guardrails.llm.__dict__ if answerer_guardrails is not None else None,

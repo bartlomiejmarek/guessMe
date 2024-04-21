@@ -1,7 +1,7 @@
 from random import choice
 
 from langchain.memory import ConversationBufferMemory
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate
 from langchain_community.chat_message_histories.in_memory import ChatMessageHistory
 from langchain_community.llms import Ollama
 
@@ -28,7 +28,7 @@ if __name__ == '__main__':
             input_variables=["length", "category"],
             template=CREATOR_PROMPT
         )
-    ).conversation.run(length=MODE.value, category=choice(CATEGORIES), level=MODE.name)
+    ).conversation.invoke(length=MODE.value, category=choice(CATEGORIES), level=MODE.name)
 
     gamer = GameAgent(
         llm=Ollama(
