@@ -38,12 +38,12 @@ def llm_vs_llm_play_game(
 
     while True:
         answerer_response = answerer.play(questioner_response)
-        st.write(f"Answerer: {answerer_response}")
+        print(f"Answerer: {answerer_response}")
         input()
         if "game over" in answerer_response.lower():
             break
         questioner_response = questioner.play(answerer_response)
-        st.write(f"Questioner: {questioner_response}")
+        print(f"Questioner: {questioner_response}")
         input()
         counter += 1
     if output_file:

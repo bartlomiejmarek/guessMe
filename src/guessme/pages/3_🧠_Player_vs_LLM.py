@@ -10,6 +10,10 @@ from random import choice
 from langchain_community.llms import Ollama
 from guessme.utils.prompts import ANSWERER_PROMPT, QUESTIONER_PROMPT
 from guessme.llm.game import llm_vs_human_play_game
+from guessme.tools.lottie import load_lottie_url
+from streamlit_lottie import st_lottie
+
+lottie_wait = load_lottie_url("https://lottie.host/928993d1-d982-4a1a-81d2-2a9985d60fd5/c30gV1QBsI.json")
 
 name = st.session_state.name
 age = st.session_state.age

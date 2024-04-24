@@ -1,5 +1,6 @@
 import streamlit as st
-
+from guessme.tools.lottie import load_lottie_url
+from streamlit_lottie import st_lottie
 st.set_page_config(page_title="Guess Me", page_icon="🧠")
 
 
@@ -19,6 +20,8 @@ if "q_a" not in st.session_state:
     st.session_state.q_a = "Questioner"
     
 st.title("🔧 Settings")
+lottie_settings = load_lottie_url("https://lottie.host/67c74d67-6ff0-4d81-9480-1d1551bd6646/ygiEUt1pRO.json")
+
 
 form = st.form(key="settings")
 name = form.text_input("Name")
@@ -34,3 +37,6 @@ if submit:
     st.session_state.mode = mode
     st.session_state.type = type
     st.session_state.q_a = q_a
+    
+st_lottie(lottie_settings, speed=1, width=600, height=400, key="settings")
+    
