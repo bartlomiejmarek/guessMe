@@ -12,9 +12,9 @@ from guessme.utils.prompts import ANSWERER_PROMPT, QUESTIONER_PROMPT
 from guessme.llm.game import llm_vs_human_play_game
 from guessme.tools.lottie import load_lottie_url
 from streamlit_lottie import st_lottie
-
-lottie_wait = load_lottie_url("https://lottie.host/928993d1-d982-4a1a-81d2-2a9985d60fd5/c30gV1QBsI.json")
-
+from streamlit_extras.switch_page_button import switch_page
+import time
+lottie_eror = load_lottie_url("https://lottie.host/afd7b9e7-7239-41da-8957-c206b5124ec7/1umLaIc2iA.json")
 name = st.session_state.name
 age = st.session_state.age
 mode = st.session_state.mode
@@ -27,6 +27,9 @@ if st.session_state.name != "":
     st.write("👤 Name: ", name)
 else:
     st.warning("Please fill your name in the settings")
+    st_lottie(lottie_eror)
+    time.sleep(2)
+    switch_page("settings")
     
 if age:
     st.write(f'🎂 You are {"below" if age < 18 else "above"} 18. The proposed levels is {"low" if age <18 else "medium/high"}')

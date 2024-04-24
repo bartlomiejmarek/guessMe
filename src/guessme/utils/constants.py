@@ -1,4 +1,4 @@
-INTRO = """# 🌟 Welcome to WhichAsk-Guess: A Cooperative Mystery Game! 🌟
+INTRO = """# 🌟 Welcome to WhichAsk-Guess: A Mystery Game! 🌟
 
 ---
 

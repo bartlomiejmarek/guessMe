@@ -31,21 +31,32 @@ def llm_vs_llm_play_game(
         guardrail: Optional[HostAgent] = None,
         questioner_guardrails: Optional[HostAgent] = None,
         answerer_guardrails: Optional[HostAgent] = None,
+        password = None,
         output_file: Union[str | Path] = None
 ):
     counter = 0
+    end_of_loop = False
     questioner_response = ""
-
-    while True:
+    with st.sidebar:
+        st.markdown(f"""
+                    🔑Password: 
+                    - {password}""")
+    while end_of_loop is False:
         answerer_response = answerer.play(questioner_response)
-        print(f"Answerer: {answerer_response}")
-        input()
+        # print(f"Answerer: {answerer_response}")
+        AI_0_message = st.chat_message('assistant')
+        AI_0_message.write(f"Answerer: {answerer_response}")
+        # input()
         if "game over" in answerer_response.lower():
             break
         questioner_response = questioner.play(answerer_response)
-        print(f"Questioner: {questioner_response}")
-        input()
+        # print(f"Questioner: {questioner_response}")
+        AI_1_message = st.chat_message('assistant', avatar="👩‍🎨")
+        AI_1_message.write(f"Questioner: {questioner_response}")
+        # input()
         counter += 1
+        if (counter > 30):
+            end_of_loop = True
     if output_file:
         save_dict_to_csv(
             output_file,

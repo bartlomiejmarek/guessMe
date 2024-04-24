@@ -24,7 +24,10 @@ dependencies = [
     "torchvision",
     "scikit-image~=0.21.0",
     "langchain",
-    "python-dotenv"
+    "python-dotenv",
+    "streamlit",
+    "streamlit-lottie",
+    "streamlit-extras"
 ]
 
 

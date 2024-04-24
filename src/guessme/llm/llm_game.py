@@ -1,5 +1,6 @@
 from random import choice
 
+import streamlit as st
 from langchain.memory import ConversationBufferMemory
 from langchain_core.prompts import PromptTemplate
 from langchain_community.chat_message_histories.in_memory import ChatMessageHistory
@@ -96,7 +97,7 @@ def create_game_agents():
         temperature=0.0
     )
 
-    return answerer, questioner, answerer_guardrail, questioner_guardrail
+    return answerer, questioner, answerer_guardrail, questioner_guardrail, password
 
 def play_game(answerer, questioner, output_file='output.csv'):
     number_of_tries = llm_vs_llm_play_game(
@@ -106,12 +107,13 @@ def play_game(answerer, questioner, output_file='output.csv'):
     )
     return number_of_tries
 
-def play_game_with_guardrails(answerer, questioner, answerer_guardrail, questioner_guardrail, output_file='output.csv'):
+def play_game_with_guardrails(answerer, questioner, answerer_guardrail, questioner_guardrail, password, output_file='output.csv'):
     number_of_tries = llm_vs_llm_play_game(
         answerer=answerer,
         questioner=questioner,
         answerer_guardrails=answerer_guardrail,
         questioner_guardrails=questioner_guardrail,
+        password=password,
         output_file=output_file
     )
     return number_of_tries
