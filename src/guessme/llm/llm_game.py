@@ -17,7 +17,7 @@ MODE = Mode.HARD
 def generate_password():
     password = HostAgent(
         llm=Ollama(
-            model="llama2",
+            model="llama3",
             temperature=0.8
         ),
         prompt=PromptTemplate(
@@ -69,7 +69,7 @@ def create_game_agents():
     password = generate_password()
     answerer = create_llm_agent(
         prompt_template=ANSWERER_PROMPT.format(word=password, history='{history}', input='{input}'),
-        model="llama2",
+        model="llama3",
         temperature=0.0,
         ai_prefix='You',
         human_prefix='Questioner',
@@ -78,7 +78,7 @@ def create_game_agents():
 
     questioner = create_llm_agent(
         prompt_template=QUESTIONER_PROMPT,
-        model="llama2",
+        model="llama3",
         temperature=0.0,
         ai_prefix='You',
         human_prefix='Answerer',
@@ -87,13 +87,13 @@ def create_game_agents():
 
     answerer_guardrail = create_guardrail_agent(
         prompt_template=ANSWERER_GUARD_PROMPT,
-        model="llama2",
+        model="llama3",
         temperature=0.0
     )
 
     questioner_guardrail = create_guardrail_agent(
         prompt_template=QUESTIONER_GUARD_PROMPT,
-        model="llama2",
+        model="llama3",
         temperature=0.0
     )
 

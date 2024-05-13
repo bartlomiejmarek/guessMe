@@ -61,7 +61,7 @@ if type == "Human":
     gamer = GameAgent(
             role="answerer",
             llm=Ollama(
-            model="llama2",
+            model="llama3",
             temperature=0.0
         ),
         prompt=PromptTemplate(
@@ -75,7 +75,7 @@ if type == "Human":
     ) if q_a.lower() == "answerer" else GameAgent(
             role= "questioner",
             llm=Ollama(
-            model="llama2",
+            model="llama3",
             # callback_manager=CallbackManager([StreamingStdOutCallbackHandler()]),
             temperature=0.0
 ),

@@ -21,7 +21,7 @@ if __name__ == '__main__':
     #  to make more predictable output - sometimes the length and level is inadequate and  the phrase is repeated.
     password = HostAgent(
         llm=Ollama(
-            model="llama2",
+            model="llama3",
             temperature=0.8
         ),
         prompt=PromptTemplate(
@@ -32,7 +32,7 @@ if __name__ == '__main__':
 
     gamer = GameAgent(
         llm=Ollama(
-            model="llama2",
+            model="llama3",
             # callback_manager=CallbackManager([StreamingStdOutCallbackHandler()]),
             temperature=0.0
         ),
@@ -47,7 +47,7 @@ if __name__ == '__main__':
             human_prefix="Questioner")
     ) if LLM_ROLE.name.lower() == "answerer" else GameAgent(
         llm=Ollama(
-            model="llama2",
+            model="llama3",
             # callback_manager=CallbackManager([StreamingStdOutCallbackHandler()]),
             temperature=0.0
         ),
