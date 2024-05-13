@@ -1,8 +1,7 @@
 from random import choice
 
-import streamlit as st
 from langchain.memory import ConversationBufferMemory
-from langchain_core.prompts import PromptTemplate
+from langchain_core.prompts.prompt import PromptTemplate
 from langchain_community.chat_message_histories.in_memory import ChatMessageHistory
 from langchain_community.llms import Ollama
 

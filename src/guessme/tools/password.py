@@ -1,13 +1,12 @@
-from random import choice
 from guessme.llm.agents import HostAgent
 from guessme.utils.prompts import CREATOR_PROMPT
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts.prompt import PromptTemplate
 from langchain_community.llms import Ollama
 
 def generate_password(mode, categories):
     password = HostAgent(
         llm=Ollama(
-            model="llama2",
+            model="llama3",
             temperature=0.8
         ),
         prompt=PromptTemplate(

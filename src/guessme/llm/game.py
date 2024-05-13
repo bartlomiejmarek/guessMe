@@ -4,7 +4,8 @@ from csv import DictWriter
 from os.path import isfile
 import streamlit as st
 
-from guessme.llm.agents import GameAgent, HostAgent, Role
+from guessme.llm.agents import GameAgent, HostAgent
+
 
 def save_dict_to_csv(file_path, dictionary, headers=None):
     """Saves or appends a dictionary to a CSV file.
@@ -75,56 +76,35 @@ def llm_vs_llm_play_game(
 
 def llm_vs_human_play_game(
         gamer: GameAgent,
-        llm_role: Role,
+        llm_role: str,
         guardrail: Optional[HostAgent] = None,
         questioner_guardrails: Optional[HostAgent] = None,
         answerer_guardrails: Optional[HostAgent] = None,
         output_file: Union[str | Path] = None
 ):
     counter = 0
-    
-    if "message" not in st.session_state:
-        st.session_state.message = []
-    
-      
-    for message in st.session_state.message:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
-    
-    
-    if llm_role.lower() == "questioner" and counter == 0:
-        user_input = "Hello, let's begin the game! Start with your question. "
-    elif counter == 0 and llm_role.lower == "answerer":
-        user_input = "Hello, let's begin the game! Provide me a simple hint.  "
-    else:
-        user_input = st.chat_input('> ')
-    
-    if user_input:
-        with st.chat_message("user"):
-            st.markdown(user_input)
-    
-        st.session_state.message.append({"role": "user", "content": user_input})
-    
-        with st.spinner("AI is thinking..."):
-            with st.chat_message("assistant"):
-                message_placeholder = st.empty()
-                full_message = ""
-                for response in gamer.play(user_input):
-                    full_message += response
-                    message_placeholder.markdown(full_message)
-                ai_response = gamer.play(user_input)
-                st.markdown(ai_response)
-                message_placeholder.markdown(full_message + "| ")
-            message_placeholder.markdown(full_message)
-        st.session_state.message.append({"role": "assistant", "content": ai_response})
-        
+    print(st.session_state.password)
+    while True:
+        if llm_role.lower() == "questioner" and counter == 0:
+            user_input = "Hello, let's begin the game! Start with your question. "
+        elif counter ==0:
+            user_input = "Hello, let's begin the game! Provide me a simple hint.  "
+        else:
+            user_input = input('> ')
+        ai_response = gamer.play(user_input)
+
+        print(f"AI: {ai_response}")
         counter += 1
         if "game over" in ai_response.lower() and llm_role.lower() == "answerer":
-            st.write(
+            print(
                 f"Congratulations. The Answerer claims that the game is over.\nYou have achieved it using {counter} prompts.")
+            break
         elif "game over" in user_input.lower() and llm_role.lower() == "questioner":
-            st.write(f"The game is over.\nLLM have achieved it using {counter} prompts.")
-        
+            print(f"The game is over.\nLLM have achieved it using {counter} prompts.")
+            break
+        elif st.session_state.password.lower() in user_input.lower() and llm_role.lower() == "questioner":
+            print("You've revealed the secret password.")
+            break
     if output_file:
         save_dict_to_csv(
             output_file,
