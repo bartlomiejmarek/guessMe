@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from enum import Enum
 from typing import Union
 
-from langchain import PromptTemplate
+from langchain_core.prompts.prompt import PromptTemplate
 from langchain.chains import ConversationChain, LLMChain
 from langchain.memory.chat_memory import BaseChatMemory
 

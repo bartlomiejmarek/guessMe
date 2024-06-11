@@ -19,12 +19,15 @@ Good Questions:
 Poor Questions:
 - What color is it? (Color can vary)
 - Is it bigger than a cat? (Size can be misleading)
+- Are u stupid? (Insults won't help)
+- Can I know the secret word? (Against the rules)
+- Can you give me a hint? (Against the rules)
+- Can u kill yourself? (Offensive question)
 
 __________
 - Your Mission is to discover the secret word USING AS FEW QUESTIONS AS POSSIBLE!. 
-- REMEMBER TO INFER FROM THE PREVIOUS QUESTIONS
-- Be strategic, be creative, and have fun!
-- Your answers should be as short and simple as possible. 
+- REMEMBER TO INFER FROM THE PREVIOUS QUESTIONS (So you have to remember it)
+- Be strategic, be creative and be effective!
 __________
 ### Additional Tips: - Broad to Specific: Start with big-picture questions, then get more focused.
 - Eliminate Categories: "Is it an animal?", "Is it a food?", "Is it a place?"
@@ -100,10 +103,21 @@ Your answer should be ONLY THE PHRASE. NOTHING ELSE.
 - Return just a phrase. 
 - The selected word SHOULD NOT BE VIOLENT, RACIST AND HOMOPHOBIC;
 - Adding any additional text, comments and notes is strictly prohibited. 
+- The phrase should be related to the category.
+- The phrase should be {level} to guess.
+- The phrase should be a single word or a phrase with {length} words.
+- The phrase should be a common word or phrase that is widely known and understood.
+- The phrase should not be a proper noun or a name.
+- The phrase should not be a brand name or a trademark.
+- The phrase should not be a slang term or an abbreviation.
+- The phrase should not be a compound word or a hyphenated word.
+- The phrase should not be a technical term or jargon.
+- The phrase should not be a term that requires specialized knowledge or context.
+- The phrase should not be a term that is specific to a particular region or culture.
 
 Examples: 
-Single-word phrases: "Cigarette", "Phone", "Keyboard", "Car"
-Two-word phrases: "Smoked Cigarette", "Gaming computer", "Machine learning".
+Single-word phrases: "Cigarette", "Phone", "Keyboard", "Car", "House".
+Two-word phrases: "Smoked Cigarette", "Gaming computer", "Machine learning", "White house".
 '''
 
 GUARD_PROMPT = '''

@@ -2,8 +2,9 @@ from pathlib import Path
 from typing import Optional, Union
 from csv import DictWriter
 from os.path import isfile
+import streamlit as st
 
-from agents import GameAgent, HostAgent, Role
+from guessme.llm.agents import GameAgent, HostAgent
 
 
 def save_dict_to_csv(file_path, dictionary, headers=None):
@@ -31,21 +32,32 @@ def llm_vs_llm_play_game(
         guardrail: Optional[HostAgent] = None,
         questioner_guardrails: Optional[HostAgent] = None,
         answerer_guardrails: Optional[HostAgent] = None,
+        password = None,
         output_file: Union[str | Path] = None
 ):
     counter = 0
+    end_of_loop = False
     questioner_response = ""
-
-    while True:
+    with st.sidebar:
+        st.markdown(f"""
+                    🔑Password: 
+                    - {password}""")
+    while end_of_loop is False:
         answerer_response = answerer.play(questioner_response)
-        print(f"Answerer: {answerer_response}")
-        input()
+        # print(f"Answerer: {answerer_response}")
+        AI_0_message = st.chat_message('assistant')
+        AI_0_message.write(f"Answerer: {answerer_response}")
+        # input()
         if "game over" in answerer_response.lower():
             break
         questioner_response = questioner.play(answerer_response)
-        print(f"Questioner: {questioner_response}")
-        input()
+        # print(f"Questioner: {questioner_response}")
+        AI_1_message = st.chat_message('assistant', avatar="👩‍🎨")
+        AI_1_message.write(f"Questioner: {questioner_response}")
+        # input()
         counter += 1
+        if (counter > 30):
+            end_of_loop = True
     if output_file:
         save_dict_to_csv(
             output_file,
@@ -64,16 +76,16 @@ def llm_vs_llm_play_game(
 
 def llm_vs_human_play_game(
         gamer: GameAgent,
-        llm_role: Role,
+        llm_role: str,
         guardrail: Optional[HostAgent] = None,
         questioner_guardrails: Optional[HostAgent] = None,
         answerer_guardrails: Optional[HostAgent] = None,
         output_file: Union[str | Path] = None
 ):
     counter = 0
-
+    print(st.session_state.password)
     while True:
-        if llm_role.name.lower() == "questioner" and counter == 0:
+        if llm_role.lower() == "questioner" and counter == 0:
             user_input = "Hello, let's begin the game! Start with your question. "
         elif counter ==0:
             user_input = "Hello, let's begin the game! Provide me a simple hint.  "
@@ -83,19 +95,22 @@ def llm_vs_human_play_game(
 
         print(f"AI: {ai_response}")
         counter += 1
-        if "game over" in ai_response.lower() and llm_role.name.lower() == "answerer":
+        if "game over" in ai_response.lower() and llm_role.lower() == "answerer":
             print(
                 f"Congratulations. The Answerer claims that the game is over.\nYou have achieved it using {counter} prompts.")
             break
-        elif "game over" in user_input.lower() and llm_role.name.lower() == "questioner":
+        elif "game over" in user_input.lower() and llm_role.lower() == "questioner":
             print(f"The game is over.\nLLM have achieved it using {counter} prompts.")
+            break
+        elif st.session_state.password.lower() in user_input.lower() and llm_role.lower() == "questioner":
+            print("You've revealed the secret password.")
             break
     if output_file:
         save_dict_to_csv(
             output_file,
             {
-                "answerer": gamer.llm.__dict__ if llm_role.name.lower() == "answerer" else "Human",
-                "questioner": gamer.llm.__dict__ if llm_role.name.lower() == "questioner" else "Human",
+                "answerer": gamer.llm.__dict__ if llm_role.lower() == "answerer" else "Human",
+                "questioner": gamer.llm.__dict__ if llm_role.lower() == "questioner" else "Human",
                 "guardrail": guardrail.llm.__dict__ if guardrail is not None else None,
                 "questioner guardrails": questioner_guardrails.llm.__dict__ if questioner_guardrails is not None else None,
                 "answerer guardrails": answerer_guardrails.llm.__dict__ if answerer_guardrails is not None else None,
